@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DJB RMS PORTAL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="../css/mutation.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!--Header starts here-->
+        <header class="header_bg"></header>
+        <!--Header ends here-->
+        <!-- **********************************CSS Loader container *******************************************-->
+        <div class="overlay">
+            <div class="overlay__inner">
+                <div class="overlay__content">
+                    <span class="spinner"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid" style="margin-top: 30px;">
+            <div class="card">
+                <div class="card-header neCon-card-header">
+                    <h4>Mutation Application Form</h4>
+                </div>
+                <div class="card-body">
+                    <form >
+                        <fieldset>
+                            <legend>Details of Existing Consumer</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="KNO">KNO <span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.KNO"  placeholder="KNO">
+                                        <i class="fa fa-check-circle checkValidKnoIcon"></i>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="OldName">Name </label>
+                                        <input type="text" class="form-control" v-model="application_data.OldName"  placeholder="Name">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="AddrArea"> Premise Address </label>
+                                        <textarea class="form-control" v-model="application_data.AddrArea" ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <input type='file'  v-model="application_data.profilePic"  />
+                                            <label for="profilePic"><i class="fa fa-edit editProfile"></i></label>
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreview" style="background-image: url(../images/user-profile.png);">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4 class="imgaeUploadh4P">Upload Profile Image</h4>
+                                    <p class="imgaeUploadh4P" style="margin-bottom: 30px;">Passport Size Photograph Of the applicant.Please Upload valid image(.jpg .jpeg .gif .png ) file. File Size should be less than 1MB.</p>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Details of Applicant applying for Mutation</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="application_data.isGOVTEmp" >
+                                        <label class="form-check-label" for="isGOVTEmp">
+                                            Govt. Organization  
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="govtFile">Upload Govt. File </label>
+                                        <input type="file"  v-model="application_data.govtFile"  title="Govt">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="govtType">Organization Type </label>
+                                        <input type="text" class="form-control" v-model="application_data.govtType"  placeholder="Organization Type">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="FullName">Name <span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.FullName"  placeholder="Name">
+                                        <input type="hidden" v-model="application_data.Name"  />
+                                        <input type="hidden" v-model="application_data.Middle"  />
+                                        <input type="hidden" v-model="application_data.Last"  />
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="FHname">Father's/Husband's/Mother's Name <span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.FHname"  placeholder="Father's/Husband's/Mother's Name">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="uid">UID No </label>
+                                        <input type="text" class="form-control" v-model="application_data.uid"  placeholder="UID No">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="email">Email Id</label>
+                                        <input type="text" class="form-control" v-model="application_data.email"  placeholder="Email Id">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Mobile">Mobile Number <span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.Mobile"  placeholder="Mobile Number">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="home">Home Number </label>
+                                        <input type="text" class="form-control" v-model="application_data.home"  placeholder="Home Number">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="office">Office Number </label>
+                                        <input type="text" class="form-control" v-model="application_data.office"  placeholder="Office Number">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Other Details</legend>
+                            <label>Blood relation <span style="color:red"> * </span></label>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.BloodRelation"  value="NORMAL" checked>
+                                        <label class="form-check-label" for="normal">
+                                            Normal Mutation
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.BloodRelation"  value="BLOODR">
+                                        <label class="form-check-label" for="blood">
+                                            Blood Relation/Legal Heir  
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3"></div>
+                                <div class="col-sm-12 col-md-3"></div>
+                            </div>
+                            <div class="row" style="margin-top: 10px;">
+
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="Urban">Relation Type <span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.relType" >
+                                        <option value="SPOUSE">SPOUSE</option>
+                                        <option value="SON">SON</option>
+                                        <option value="DAUGHTER">DAUGHTER</option>
+                                        <option value="MOTHER">MOTHER</option>
+                                        <option value="FATHER">FATHER</option>
+                                        <option value="SIBLING">SIBLING</option>
+                                        <option value="OTHER">OTHER RELATION</option>
+                        
+                                    </select>
+                                    <input type="text" class="form-control" v-model="application_data.relationTypeOthr"  placeholder="Other">
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="Urban">Mutation Reason</label>
+                                    <select class="form-control" v-model="application_data.vfsFlagValue" >
+                                        <option value="PURCHASE">PURCHASE</option>
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="children">No of children</label>
+                                        <input type="text" class="form-control" v-model="application_data.children"  placeholder="No of children">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="adults">No of adults</label>
+                                        <input type="text" class="form-control" v-model="application_data.adults"  placeholder="No of adults">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Bank Details</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Bank">Name of the Bank <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Bank"  placeholder="Name of the Bank">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Branch">Name of the Branch <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Branch"  placeholder="Name of the Branch">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="MICR">MICR Code <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.MICR"  placeholder="MICR Code">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Account">Bank Account No <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Account"  placeholder="Bank Account No">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>11.Documents to be attached <i>(Max Size 5 MB)</i></legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="ownerStatusCombo">OwnerShip Status <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.ownerStatusCombo"  class="form-control">
+                                            <option value="Owner">Owner</option>
+                                            <option value="Occupier">Occupier</option>
+                                            <option value="Tenant">Tenant</option>
+                                            <option value="Heir">Heir</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="propertyOwnerCombo">Proof Of Ownership <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.propertyOwnerCombo"  class="form-control"></select>
+                                    </div>
+                                    <!-- <button class="btn btn-primary self-declartion-btn" id="selfDec">Download Self Declaration Form</button> -->
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="doc3">Upload Proof of OwnerShip Document <i class="fa fa-info-circle" style="cursor: pointer;" title="Self declaration/undertaking duly signed must be uploaded where water/sewer connection is applied on the basis of previous electricity bills"></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.doc3" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="ProofIdentityCombo">Proof Of Identity <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.ProofIdentityCombo" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="identityDocNumber6">Proof Of Identity Document <span style="color:red"> * </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.identityDocNumber6"  placeholder="Proof Of Identity Document">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="doc6">Upload Proof Of Identity <i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.doc6" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <button class="btn btn-primary self-declartion-btn" id="selfDec">Download Self Declaration Form</button>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="doc1">Upload Self Declaration Form <span style="color:red"> * </span> <i class="fa fa-info-circle" style="cursor: pointer;" title="Self declaration/undertaking duly signed must be uploaded where water/sewer connection is applied on the basis of previous electricity bills"></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.doc1" >
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <input type="hidden" v-model="application_data.requestID"  value="" />
+                                    <input type="hidden" v-model="application_data.sourceName"  value="" />
+                                    <input type="hidden" v-model="application_data.hiddenPremId"  />
+                                    <input type="hidden" v-model="application_data.hiddenHouse" />
+                                    <input type="hidden" v-model="application_data.hiddenSubloc"  />
+                                    <input type="hidden" v-model="application_data.hiddenSubloc1"  />
+                                    <input type="hidden" v-model="application_data.hiddenSubloc2"  />
+                                    <input type="hidden" v-model="application_data.hiddenVillage" />
+                                    <input type="hidden" v-model="application_data.hiddenSubcol" />
+                                    <input type="hidden" v-model="application_data.hiddenLoc"  />
+                                    <input type="hidden" v-model="application_data.hiddenStreet"  />
+                                    <input type="hidden" v-model="application_data.hiddenKhasra"  />
+                                    <input type="hidden" v-model="application_data.hiddenSociety"  />
+                                    <input type="hidden" v-model="application_data.hiddenPincode"  />
+                                    <input type="hidden" v-model="application_data.hiddenJjr"  />
+                                    <input type="hidden" v-model="application_data.billSubLocHide" />
+                                    <input type="hidden" v-model="application_data.billLocHide"  />
+                                    <input type="hidden" v-model="application_data.Category"  />
+                                    <input type="hidden" v-model="application_data.stateDesc"  />
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>12.Declaration/Undertaking</legend>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" v-model="application_data.declaration" >
+                                <label class="form-check-label" for="declaration">
+                                    I hereby declare that all the information furnished by me is true to the best of my knowledge and if any discrepencies are found , I will be responsible for disconnection of services by the DJB without any prior notice and any other legal action taken by DJB.
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Submitted By</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <input type="hidden" class="textbox" v-model="application_data.vfsID" >
+                                        <label for="vfsFlag">Submitted By <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.vfsFlag"  class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="signaturePath">Upload Signature: <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.signaturePath" >
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <div style="text-align: -webkit-center;">
+                                        <button class="btn btn-primary" @click="onSubmitAppicationForm()">Submit</button>
+                                        <button class="btn btn-primary" id="previewConn">Preview</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="successDivRef">
+            <div class="card" style="text-align: center;">
+                <div class="card-header">
+                    <h4>New Connection Reciept</h4>
+                    <i class="fa fa-times" style="position: absolute;right: 23px;top: 18px;cursor: pointer;" id="closeSuccesDiv"></i>
+                </div>
+                <div class="card-body" id="recieptForm">
+                    <p style="text-align: center;font-size: 22px;margin: 0px 0px 20px 0px;">Application Details</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Applican't Name</th>
+                                    <td id="appliName">ss</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">Application Type</th>
+                                    <td id="appliType">ss</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Application Ref No</th>
+                                    <td id="appliRef">ss</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Date Of Submissions</th>
+                                    <td id="appliDate">ss</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="downlaodReciept" style="margin-bottom: 20px;">Download Reciept</button>
+                    <a href="#" class="btn btn-primary" id="filledApplication" style="margin-bottom: 20px;">Download filled application form</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mutationModel" id="mutationModelBtn" style="visibility: hidden;"></button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="mutationModel" tabindex="-1" role="dialog" aria-labelledby="mutationModelLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mutationModelLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                    </div>
+                    <div class="modal-body" id="modelBody">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" type="button" class="btn btn-primary" id="externalLink" style="display: none;">Save changes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+
+    <script>
+        new Vue({
+        el: "#app",
+        data() {
+            return {
+                application_data:{
+                    KNO: null,
+                    OldName: null,
+                    AddrArea: null,
+                    profilePic: null,
+                    FullName: null,
+                    Name:null,
+                    Middle:null,
+                    Last:null,
+                    FHname: null,
+                    uid: null,
+                    email:null,
+                    Mobile: null,
+                    home:null,
+                    office:null,
+                    BloodRelation: null,
+                    relationTypeOthr:null,
+                    vfsFlagValue:null,
+                    children: null,
+                    adults: null,
+                    Bank: null,
+                    Branch: null,
+                    MICR: null,
+                    Account: null,
+                    ownerStatusCombo: null,
+                    propertyOwnerCombo: null,
+                    doc3: null,
+                    ProofIdentityCombo: null,
+                    identityDocNumber6: null,
+                    doc6: null,
+                    doc1: null,
+                    requestID:null,
+                    sourceName:null,
+                    hiddenPremId:null,
+                    hiddenHouse:null,
+                    hiddenSubloc:null,
+                    hiddenSubloc1:null,
+                    hiddenSubloc2:null,
+                    hiddenVillage:null,
+                    hiddenSubcol:null,
+                    hiddenLoc:null,
+                    hiddenStreet:null,
+                    hiddenKhasra:null,
+                    hiddenSociety:null,
+                    hiddenPincode:null,
+                    hiddenJjr:null,
+                    billSubLocHide:null,
+                    billLocHide:null,
+                    Category:null,
+                    stateDesc:null,
+                    declaration: null,
+                    vfsID: null,
+                    vfsFlag: null,
+                    signaturePath: null,
+                }
+            };
+        },
+        methods: {
+            onSubmitApplicationForm() {
+            let application_formdata = new FormData();
+
+            for(let key in this.application_data){
+                application_formdata.append(`${key}`, this.application_data[key])
+            }
+
+            axios.post("https://djb.gov.in/DJBRMSApp/rest/Services/Mutation/ApplyForMutation", application_formdata, {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            })
+            },
+        },
+        });
+    </script>
+
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/debug.js"></script>
+    <script src="../js/mutation.bundle.js"></script>
+
+</body>
+
+</html>

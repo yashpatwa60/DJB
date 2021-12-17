@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DJB RMS PORTAL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="../css/newconnection.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+<div id="app">
+    <!--Header starts here-->
+    <header class="header_bg"></header>
+    <!--Header ends here-->
+    <!-- **********************************CSS Loader container *******************************************-->
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="margin-top: 30px;">
+        <div class="card">
+            <div class="card-header neCon-card-header">
+                <h4>Application Form for New Connection</h4>
+                <p>Scroll over the field and follow the tooltip to know the label of the field.<span class="newCon-red"> * </span> means mandatory field and <span class="newCon-red"> ** </span> means conditional mandatory field. </p>
+            </div>
+            <div class="card-body">
+                <form name="indexForm" id="indexForm">
+                    <div id="newCon-type-req">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 offset-md-4">
+                                <input type="hidden" v-model="application_data.PremFor">
+                                <input type="hidden" v-model="application_data.SubLocationValue">
+                                <input type="hidden" v-model="application_data.isThirdParty" value="N">
+                                <input type="hidden" v-model="application_data.vfsID" value="">
+                                <div class="form-group">
+                                    <label for="zroLocation">ZRO Location<span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.zroLocation">
+                                    <option value="Select">Select</option>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <fieldset>
+                            <legend>1.Type Of Request (Please tick):</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ApplyFor" onclick="toggleTemp()" value="WATERSEW" checked>
+                                        <label class="form-check-label" for="WatSewCon">
+                                        Water and Sewerage Connection
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ApplyFor" onclick="toggleTemp()" value="PERMCONN">
+                                        <label class="form-check-label" for="PermCon">
+                                        Water Connection  <i><p style="font-size:11px;">(In case where no Sewerage System has been laid by DJB)</p></i>
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ApplyFor" onclick="toggleTemp()" value="SEWCONN">
+                                        <label class="form-check-label" for="SewCon">
+                                        Sewerage Connection <i><p style="font-size:11px;">(In case Water Connection is not required)</p></i>
+                                    </label>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-sm-12 col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="ApplyFor" id="Regul" onclick="toggleTemp()" value="REGULARIZATION">
+                                        <label class="form-check-label" for="Regul">
+                                        Regularization <i><p style="font-size: 11px;">(In case water/sewer connection already installed without prior sanction)</p></i>
+                                    </label>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>2.Connection Type:</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.connectionType" value="COMMON" checked>
+                                        <label class="form-check-label" for="connectionTypeCommon">
+                                            Permanent Connection
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.connectionType" value="TEMP">
+                                        <label class="form-check-label" for="connectionTypeTemp">
+                                            Temporary Connection
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <select class="form-control" v-model="application_data.purpose" disabled>
+                                        <option value="EXHIBITION">Exhibition</option>
+                                        <option value="OFFICIAL_FUN">Official Function</option>
+                                        <option value="RELIGIOUS_FUN">Religious Function</option>
+                                        <option value="CIRCUS">Circus</option>
+                                        <option value="CONSTRUCTION">Construction</option>
+                                        <option value="COURT_ORDERS">As per Court Orders</option>
+                                        <option value="SOCIAL_FAMILY">Social/Family Function</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="newCon-detail-applicant">
+                        <fieldset>
+                            <legend>3.Details Of Applicant:</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <input type='file' v-model="application_data.profilePic"  accept=".png, .jpg, .jpeg" />
+                                            <label for="profilePic"><i class="fa fa-edit editProfile"></i></label>
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <div id="imagePreview" style="background-image: url(../images/user-profile.png);">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4 class="imgaeUploadh4P">Upload Profile Image</h4>
+                                    <p class="imgaeUploadh4P" style="margin-bottom: 30px;">Passport Size Photograph Of the applicant.Please Upload valid image(.jpg .jpeg .gif .png ) file. File Size should be less than 1MB.</p>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span style="color:red"> * </span></label>
+                                <input type="text" class="form-control" v-model="application_data.firstName" placeholder="First Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="middleName">Middle Name</label>
+                                <input type="text" class="form-control" v-model="application_data.middleName" placeholder="Middle Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" v-model="application_data.lastName" placeholder="Last Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="FHname">Father/Husband Name<span style="color:red"> * </span></label>
+                                <input type="text" class="form-control" v-model="application_data.FHname" placeholder="Father/Husband Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" v-model="application_data.isGOVTEmp">
+                                <label class="form-check-label" for="isGOVTEmp">
+                                            Govt. Organization
+                                        </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group">
+                                <label for="govtFile">Upload ID Proof Of The Organization</label>
+                                <input type="file" class="form-control-file" v-model="application_data.govtFile" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group">
+                                <label for="FHname">Name of Government Organization<span style="color:red"> ** </span></label>
+                                <input type="text" class="form-control" v-model="application_data.orgName" placeholder="Organization Name" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>4.Contact Details</legend>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="email">Email Id<span style="color:red"> ** </span></label>
+                                    <input type="text" class="form-control" v-model="application_data.email" placeholder="Email Id">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="Mobile">Mobile Number<span style="color:red"> * </span></label>
+                                    <input type="text" class="form-control" v-model="application_data.Mobile" placeholder="Mobile Number">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="home">Home Tel. No</label>
+                                    <input type="text" class="form-control" v-model="application_data.home" placeholder="Home Tel. No">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="office">Office No<span style="color:red"> ** </span></label>
+                                    <input type="text" class="form-control" v-model="application_data.office" placeholder="Office No">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>5.For DJB Employee</legend>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" v-model="application_data.isDJBEmp">
+                                    <label class="form-check-label" for="isDJBEmp">
+                                      DJB Employee 
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="empId">Employee Id<span style="color:red"> ** </span></label>
+                                    <input type="text" class="form-control" v-model="application_data.empId" placeholder="Employee Id" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="dateOfRet">Date of Retirement<span style="color:red"> ** </span></label>
+                                    <input type="text" class="form-control" v-model="application_data.dateOfRet" placeholder="Date of Retirement" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="offName">Office Name & address</label>
+                                    <textarea class="form-control" rows="1" v-model="application_data.office" disabled></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div id="newCon-prop-address">
+                        <fieldset>
+                            <legend>6.Property Address</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="pinAdd">Pin Code<span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.pinAdd" placeholder="Pin Code">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="locaAdd">Locality<span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.locaAdd" disabled>
+                                        <option value="NA">Please Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="subLocAdd">Sub locality<span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.subLocAdd" title="Sublocality" disabled="">
+                                        <option value="NA">Please Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="hNoAdd">House No<span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.hNoAdd" placeholder="House No">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="RoadNoAdd">Road No</label>
+                                        <input type="text" class="form-control" v-model="application_data.RoadNoAdd" placeholder="Road No">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="subLoc1Add">Sub Locality 1</label>
+                                        <input type="text" class="form-control" v-model="application_data.subLoc1Add" placeholder="Sub Locality 1">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="subLoc2Add">Sub Locality 2</label>
+                                        <input type="text" class="form-control" v-model="application_data.subLoc2Add" placeholder="Sub Locality 2">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="subColAdd">Sub Colony</label>
+                                        <input type="text" class="form-control" v-model="application_data.subColAdd" placeholder="Sub Colony">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="vilAdd">Village</label>
+                                        <input type="text" class="form-control" v-model="application_data.vilAdd"  placeholder="Village">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="kNoAdd">Khasra No</label>
+                                        <input type="text" class="form-control" v-model="application_data.kNoAdd" placeholder="Khasra No">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="socnameAdd">Society Name</label>
+                                        <input type="text" class="form-control" v-model="application_data.socnameAdd"  placeholder="Society Name">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="newCon-conn-use-details">
+                        <fieldset>
+                            <legend>7.Property and water connection use details <i>(please refer pages-Instruction to fill the application)</i></legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <p> Development Charges Paid (Submit Latest Payment Receipts, if applicable) </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="application_data.DevelopementCharge" >
+                                        <label class="form-check-label" for="DevelopementCharge" style="margin-right: 30px;">
+                                            Water
+                                        </label>
+                                        <input class="form-check-input" type="checkbox" v-model="application_data.Sewrage" >
+                                        <label class="form-check-label" for="Sewrage">
+                                            Sewerage 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3 reciept" id="waterRecipt">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="waterReceiptId" style="margin-bottom: 10px;" placeholder="Water Reciept ID">
+                                        <input type="file" class="form-control-file" v-model="application_data.waterFile" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3 reciept" id="sewerageRecipt">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="sewerageReceiptId" style="margin-bottom: 10px;" placeholder="Sewerage Receipt ID">
+                                        <input type="file" class="form-control-file" v-model="application_data.sewrageFile" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="locaAdd">Property Type<span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.locaAdd">
+                                        <option value="Select">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="Urban">Urban /Rural</label>
+                                    <select class="form-control" v-model="application_data.Urban" >
+                                        <option value="Please Select">Please Select</option>
+									    <option value="Urban">Urban</option>
+									    <option value="Rural">Rural</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="floor">No. Of Floors<span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.floor" placeholder="No. Of Floors">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="bed">No Of Beds<span style="color:red"> ** </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.bed" placeholder="No Of Beds">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="plot"> Plot Area(In Sq m)<span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.plot" placeholder="Plot Area">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="built"> Built Up Area <span style="color:red"> * </span></label>
+                                        <input type="text" class="form-control" v-model="application_data.built" placeholder="Built Up Area">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="type_connection">Water Connection Type <span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.type_connection" >
+                                        <option value="Please Select">Please Select</option>
+									   
+                                    </select>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <label for="Use_Connection">Water connection used by <span style="color:red"> * </span></label>
+                                    <select class="form-control" v-model="application_data.Use_Connection" >
+                                        <option value="Please Select">Please Select</option>
+									   
+                                    </select>
+                                    <i>(for identification/tagging-purpose)</i>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- <div id="newCon-licenece-detail">
+                        <fieldset>
+                            <legend>8. Details of Licensed Plumber <i>(for installation of connection proposed to be engaged by applicant)</i> list available on website</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="plumberName">Name of licensed plumber <span style="color:red"> ** </span> <i class="fa fa-info-circle" style="cursor: pointer;" title="Please check the DJB site for plumber details."></i></label>
+                                        <input type="text" class="form-control" name="plumberName" id="plumberName" placeholder="Name of licensed plumber ">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="licenseNo">License No <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" name="licenseNo" id="licenseNo" placeholder="License No">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_plumber_upload">Confirmation Letter of Licensed Plumber <span style="color:red"> ** </span></label>
+                                        <input type="file" class="form-control-file" name="document_plumber_upload" id="document_plumber_upload">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div> -->
+                    <div id="newCon-bank-detail">
+                        <fieldset>
+                            <legend>8.Bank Details</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Bank">Name of the Bank <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Bank" placeholder="Name of the Bank">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Branch">Name of the Branch <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Branch" placeholder="Name of the Branch">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="MICR">IFSC Code <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.MICR" placeholder="IFSC Code">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="Account">Bank Account No <span style="color:red"> ** </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.Account" placeholder="Bank Account No">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="newCon-RWH-detail">
+                        <fieldset>
+                            <legend>9.Rain Water Harvesting</legend>
+                            <i>Do you like to apply for Adequacy and functionality certificate for Rainwater Harvesting (if Yes check below)</i>
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="application_data.enableRWH" value="rwhEnabled">
+                                        <label class="form-check-label" for="enableRWH">
+                                                Apply for RWH Adequacy Certificate
+								            </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="applyRWH">
+                                <div class="row" style="margin-bottom: 10px;">
+                                    <div class="col-sm-12 col-md-4">
+                                        <label for="corsAddress" class="form-label">Correspondence/Site Address <span style="color:red"> * </span></label>
+                                        <textarea class="form-control" id="corsAddress" v-model="application_data.corsAddress" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="pPlan">Upload approved building sanction plan <span style="color:red"> * </span></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.pPlan">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <button class="btn btn-primary self-declartion-btn RWHForm">Download RWH Sample Form</button>
+                                    </div>
+                                </div>
+                                <i class="iRWH">Required Retention Capacity(in cum)</i>
+                                <hr style="margin-top: 0px !important;">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="roofTopArea">Roof Top Area(In Sq m) <span style="color:red"> * </span> </label>
+                                            <input type="text" class="form-control" v-model="application_data.roofTopArea" placeholder="Roof Top Area(In Sq m)">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="totalPlotArea">Total Plot Area(In Sq m) <span style="color:red"> * </span> </label>
+                                            <input type="text" class="form-control" v-model="application_data.totalPlotArea" placeholder="Total Plot Area(In Sq m)">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label for="pavedArea">Paved/Pucca floor with non-pollution catchment area(In Sq m) <span style="color:red"> * </span> </label>
+                                            <input type="text" class="form-control" v-model="application_data.pavedArea" placeholder="Paved/Pucca floor with non-pollution catchment area(In Sq m)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="iRWH">Required Retention Capacity(in cum)</i>
+                                <hr style="margin-top: 0px !important;">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="pavedArea">Size of pit <span style="color:red"> * </span> </label>
+                                            <select id="circular" class="form-control"><option value="REC">Rectangular</option><option value="CIR">Circular</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="circularDiv">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="breadth">Dia(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.dia" placeholder="dia(mm)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="depth">Depth(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.depthC" placeholder="Depth(mm)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="total">Total(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.totalC" placeholder="Total(mm)" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div id="RectangalDiv">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="length">Length(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.length" placeholder="Length(mm)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="breadth">Breadth(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.breadth" placeholder="Breadth(mm)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="depth">Depth(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.depth"  placeholder="Depth(mm)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-2">
+                                            <div class="form-group">
+                                                <label for="total">Total(mm) <span style="color:red"> * </span> </label>
+                                                <input type="text" class="form-control" v-model="application_data.total"  placeholder="Total(mm)" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <i class="iRWH">Details of RWH pit</i>
+                                <hr style="margin-top: 0px !important;">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="govt">Is Govt/Pvt <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.govt" class="form-control"><option value="YES">Govt</option><option value="NO">Pvt</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="iRWH">Other Parameters for RWH system</i>
+                                <hr style="margin-top: 0px !important;">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="overflowSystem">Bypass/Overflow system exist <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.overflowSystem" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="functional">System is Functional <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.functional" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="adeSystem">System is Adequate <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.adeSystem" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="conSys">Proper conveyance system exists <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.conSys" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="iRWH">Filter Media details</i>
+                                <hr style="margin-top: 0px !important;">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="aggre">Aggregates 40 to 63 mm, size 0.5m thickness <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.aggre" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="functional">Charcoal/Activated carbon 0.1m thickness <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.char" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="sand">Sand 1.5mm, 2mm, size 0.2m thickness <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.sand" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2">
+                                        <div class="form-group">
+                                            <label for="conSys">Geo textile membrane <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.geo" class="form-control"><option value="YES">Yes</option><option value="NO">No</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="newCon-document-detail">
+                        <fieldset>
+                            <legend>10.Documents to be attached <i>(Max Size 5 MB)</i></legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="ProofIdentityCombo">Proof Of Identity <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.ProofIdentityCombo" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_proofIdentity">Proof Of Identity Document <span style="color:red"> * </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.document_proofIdentity" placeholder="Proof Of Identity Document">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_proofIdentity_upload">Upload Proof Of Identity <i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.document_proofIdentity_upload">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="ownerStatusCombo">OwnerShip Status <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.ownerStatusCombo" class="form-control">
+                                            <option value="Owner">Owner</option>
+                                            <option value="Occupier">Occupier</option>
+                                            <option value="Tenant">Tenant</option>
+                                            <option value="Heir">Heir</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <button class="btn btn-primary self-declartion-btn" id="selfDec">Download Self Declaration Form</button>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_ProofOfResidence_upload">Upload OwnerShip Status <i class="fa fa-info-circle" style="cursor: pointer;" title="Self declaration/undertaking duly signed must be uploaded where water/sewer connection is applied on the basis of previous electricity bills"></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.document_ProofOfResidence_upload">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="PropertyOwnerCombo">Property OwnerShip <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.PropertyOwnerCombo" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_PropertyOwner">Property OwnerShip Document <span style="color:red"> * </span> </label>
+                                        <input type="text" class="form-control" v-model="application_data.document_PropertyOwner" placeholder="Proof Of Identity Document">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_PropertyOwner_upload">Upload Property OwnerShip Document <i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.document_PropertyOwner_upload" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="othersCombo">Others </label>
+                                        <select v-model="application_data.othersCombo" class="form-control">
+                                            <option value="NOC From Owner">NOC From Owner</option>
+                                            <option value="NOC From MCD">NOC From MCD</option>
+                                            <option value="NOC From DPCC">NOC From DPCC</option>
+                                            <option value="Layout Plan">Layout Plan</option>
+                                            <option value="Key Plan">Key Plan</option>
+                                            <option value="Floor Plan">Floor Plan</option>
+                                            <option value="Site Plan">Site Plan</option>
+                                            <option value="Total Water Demand">Total Water Demand</option>
+                                            <option value="Completion Plan">Completion Plan</option>
+                                            <option value="Hydraulic Calculation Plan">Hydraulic Calculation Plan</option>
+                                            <option value="Rain Water Harvesting Certificate">Rain Water Harvesting Certificate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_Others">Other Document </label>
+                                        <input type="text" class="form-control" v-model="application_data.document_Others" placeholder="Proof Of Identity Document">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="document_Others_upload">Upload Other Document <i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.document_Others_upload">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="newCon-decleration-detail">
+                        <fieldset>
+                            <legend>11.Declaration/Undertaking</legend>
+                            <!-- <h5 class="underTaking">DECLARATION:</h5> -->
+                            <ul class="ordeListClass">
+                                <li> I understand that sanction of connection does not acknowledge or confer any title, ownership or occupancy right in favour of the applicant.</li>
+                                <!-- <li> I hereby declare that all the information furnished by me is true to the best of my knowledge and if any discrepancies are found , I will be responsible for disconnection
+                                    of services by the DJB without any prior notice and any other legal action taken by DJB.</li> -->
+                                <li> I declare that there is no dispute on property and there is no stay from any court of law against obtaining water/ sewerage connection.</li>
+                                <li> The Property on which connection is being applied is not booked/unauthorized/encroachment of Govt.Land/misuse etc.</li>
+
+                                <!-- <h5 class="underTaking">UNDERTAKING:</h5> -->
+
+                                <li> I further undertake that in case of any dispute about the ownership of the property I will absolve DJB from any legal battle in the court of law as the water connection applied for is related to supply of potable water
+                                    and not to decide the ownership of property.</li>
+                                <li> I further undertake to pay the charges as and when demanded by DJB, and in the event of non-payment, DJB will be at liberty to disconnect the services being provided by DJB.
+                                </li>
+                                <li> I further undertake that I have not taken 'DJB Employee Rebate' against any other Premise/Connection.</li>
+                                <!-- <li> I undertake to install my water connection only through license plumber of Board.</li>
+                                <li> I undertake that water/sewer connection will be laid without damage of the distribution line and wherever required, connection from the loop line will be taken.</li> -->
+                                <li> In case of variation in plot size as per document submitted by the undersigned and on actual measurement by DJB representative, difference of Infrastructure charge/any other charge on actual measurement will be paid by
+                                    me.
+                                </li>
+                                <li> In case connection is found non-feasible on technical ground as per any prevalent policy of DJB the water connection may be denied or if sanctioned inadvertently, the said sanction may be withdrawn and may be disconnected
+                                    without any notice.</li>
+                                <li> I hereby undertake that all the facts and documents submitted are true and correct, in case of any misrepresentation or wrong facts etc., sanction of connection may be disconnected without any notice..</li>
+
+                            </ul>
+                        </fieldset>
+
+                    </div>
+                    <div id="submitDiv">
+                        <fieldset>
+                            <legend>Submitted By</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <input type="hidden" class="textbox" v-model="application_data.document_ProofOfResidence_upload" v-model="application_data.vfsID">
+                                        <label for="vfsFlag">Submitted By <span style="color:red"> * </span> </label>
+                                        <select v-model="application_data.vfsFlag" class="form-control">
+                                            <!-- <option value="SELF" selected="selected">SELF</option> -->
+										<!-- <Option value="VFS">M SAHAYAK</Option> -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="signaturePath">Upload Signature: <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                        <input type="file" class="form-control-file" v-model="application_data.signaturePath">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="application_data.declaration">
+                                        <label class="form-check-label" for="declaration">
+                                            I Agree 
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div>
+                                        <button class="btn btn-primary" id="applyNewConnection">Submit</button>
+                                        <button class="btn btn-primary" id="previewConn">Preview</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+            </div>
+
+
+            </form>
+        </div>
+    </div>
+    <div class="successDivRef">
+        <div class="card" style="text-align: center;">
+            <div class="card-header">
+                <h4>New Connection Reciept</h4>
+                <i class="fa fa-times" style="position: absolute;right: 23px;top: 18px;cursor: pointer;" id="closeSuccesDiv"></i>
+            </div>
+            <div class="card-body" id="recieptForm">
+                <p style="text-align: center;font-size: 22px;margin: 0px 0px 20px 0px;">Application Details</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Applican't Name</th>
+                                <td id="appliName">ss</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">Application Type</th>
+                                <td id="appliType">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Application Ref No</th>
+                                <td id="appliRef">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Built Up Area(Sq m)</th>
+                                <td id="appliBuilt">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date Of Submissions</th>
+                                <td id="appliDate">ss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="downlaodReciept" style="margin-bottom: 20px;">Acknowledge Reciept</button>
+                <a href="#" class="btn btn-primary" id="filledApplication" style="margin-bottom: 20px;">Download filled application form</a>
+            </div>
+        </div>
+    </div>
+    <div class="checkListDivRef">
+        <div class="card" style="text-align: center;">
+            <div class="card-header">
+                <h4>Checklist for Applying New Water/Sewer Connection</h4>
+                <i class="fa fa-times closeCheckListDiv" style="position: absolute;right: 23px;top: 18px;cursor: pointer;"></i>
+            </div>
+            <div class="card-body" style="text-align: justify;  height: 95vh;overflow: auto;">
+                <div class="row">
+                    <div class="col-sm-12 col-md-4"></div>
+                    <div class="col-sm-12 col-md-4 chekListHiglight">
+                        <p>Please go through checklist before start filling form</p>
+                        <i class="fa fa-chevron-down bounce"></i>
+                    </div>
+                    <div class="col-sm-12 col-md-4"></div>
+                </div>
+                <ul class="ordeListClass">
+                    <i><b><u> Please refer below instructions/guidelines to fill the application form:</u></b></i>
+
+                    <p><b>Note:</b></p>
+                    <p><i class="fa fa-chevron-right hand-color"></i> In case of applicant already having water connection and wish to apply sewer connection, the application through 'Add Services' tab to be applied.</p>
+                    <p><i class="fa fa-chevron-right hand-color"></i> In case of applicant already having sewer connection and wish to apply water connection, the application through 'Add Services' tab to be applied.</p>
+                    <br> On New Connection application form below details need to be filled/entered/selected by applicant:
+                    <li> Applicant has to select <b>ZRO location</b> of their Residence constituency</li>
+                    <li> Under <b>Type of Request</b> section - Applicant has to select one out of below mentioned radio buttons:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> <b>Water &amp; Sewerage Connection</b> - Select this radio button if wish to apply for Water &amp; Sewerage connection both</li>
+                        <li> <b>Water Connection</b> - Select this radio button in case where no Sewerage System has been laid by DJB</li>
+                        <li> <b>Sewerage Connection</b> - Select this radio button in case Water Connection is not required</li>
+                        <li> <b>Regularization</b> - Select this radio button in case water/sewer connection is already installed without prior sanction</li>
+                    </ol>
+                    <li> Under <b>Details of Applicant</b> section - Applicant has to fill <b>First Name, Middle Name, Last Name, Father/Husband Name.</b> In case applicant belongs to Govt. Organization then
+                        <b>Govt. Organization</b> radio button is selected &amp; then <b>Name of Government Organization</b> need to filled &amp; scanned copy of <b>Govt ID proof</b> need to be uploaded.</li>
+                    <li> Under <b>Contact Details</b> section - <b>Email ID, Mobile No</b>(Mandatory),<b> Home Tel. No, Office No</b> need to be filled by applicant.</li>
+                    <li> Under <b>DJB Employee</b> section - If applicant is DJB employee then DJB Employee checkbox need to be checked &amp; relevant details should be provided.</li>
+                    <li> Under <b>Property Address</b> section - Applicant has to enter <b>PIN Code</b> &amp; select <b>Locality, Sub locality</b> from dropdown populated on the basis of PIN Code &amp; fill
+                        <b>House No</b> &amp; other relevant details if applicable.</li>
+                    <li> Under <b>Property and water connection use details section</b> - Applicant has to fill/select below details:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> <b>Property Type:</b> Applicant has to select one Property type out of the list. (Mandatory)</li>
+                        <li> <b>Urban/Rural:</b> Applicant has to select whether property belongs to Urban or Rural. (Mandatory)</li>
+                        <li> <b>No of Floors:</b> Applicant has to enter No of floors of Property.(To be fed by single connection case of JJ Residential Colony)</li>
+                        <li> <b>Plot Area(in Sq m):</b> Enter Plot Area in square Meters. (Mandatory)</li>
+                        <li> <b>Built Up Area:</b> Enter Plot Area in square Meters less than Plot Area. (Mandatory)</li>
+                        <li> <b>Water Connection Type:</b> Applicant has to select purpose of Water Connection Type to be applied out of Commercial/Industrial or Domestic. (Mandatory)</li>
+                        <li> <b>Water connection used by (for identification/tagging-purpose):</b> Applicant has to select Water Connection Type used by for identification/tagging purpose out of the list.(Mandatory)</li>
+                    </ol>
+                    <li> Under <b>Details of Licensed Plumber (for installation of connection proposed to be engaged by applicant) list available on website</b> section - In accordance with section 35 of Delhi Water Board act, installation of connection shall
+                        be executed through licensed plumber approved by board.</li>
+                    <li> Under <b>Documents to be attached</b> section - Applicant has to upload scanned copy of documents for below mentioned category:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> <b>Proof of Identity</b> - List of acceptable documents are available at top of page.</li>
+                        <li> <b>Ownership Status</b> - List of acceptable documents are available at top of page.</li>
+                        <li> <b>Property Ownership Document</b> - List of acceptable documents are available at top of page.</li>
+                        <li> <b>Others</b> - List of acceptable documents are available at top of page.</li>
+                    </ol>
+                    <li> Under <b>Declaration/Undertaking</b> section - Applicant has to read Declaration and Undertaking carefully &amp; enter Text from Captcha image displayed at left.</li>
+                    <li> Under <b>Submitted By</b> section - Applicant has to Upload his/her Signature &amp; check I Agree checkbox.</li>
+                    <li> After submitting all above mentioned details, applicant has to click on <b>Preview</b> button.</li>
+                    <li> Applicant can also <b>Edit</b> New Connection details as displayed in <b>Preview form</b> or can <b>Submit</b> the request if all entered details are correct.</li>
+                    <br>
+
+                    <li> <b>Passport size photograph</b>(File type - .jpg, .jpeg or .png of file size less than 150KB but the same is not mandatory)</li>
+                    <li> <b>ID proof of the Govt. organization</b>(if applicant selects Govt. Organization checkbox - for taking connection on behalf of Govt. Organization)</li>
+                    <li> <b>Confirmation Letter of Licensed Plumber</b> - In accordance with section 35 of Delhi Water Board act, installation of connection shall be executed only through licensed plumber approved by board.</li>
+                    <li> <b>Bank Details section</b> - Applicant has to enter Name of the Bank, Name of the Branch, IFSC Code, Bank Account No. (Non-mandatory)</li>
+                    <li> <b>Rain Water Harvesting section</b> - If applicant wish to apply for RWH Adequacy Certificate then Apply for RWH Adequacy Certificate radio button is to be selected &amp; required data needs to be filled &amp; saved. Also, Approved
+                        building sanction plan is to be uploaded which is mandatory in this case.</li>
+                    <li> <b>Proof Of Identity</b> - One out of below documents need to be uploaded(Mandatory)</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> Driving License, PAN Card, Passport, Ration card with Applicant's photo ,Photo Identity Card issued by any govt. agency, Unique ID card[UID/Aadhaar Card], Voter Identification Card</li>
+                    </ol>
+                    <li> <b>Self-Declaration Signed Document</b></li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> Document need to be downloaded, filled, signed &amp; uploading the same in all cases other than having registered document of Ownership(Mandatory)</li>
+                        <!-- <li> If ownership status is Owner, then Registered Sale deed in his/her name has to be uploaded</li>
+                        <li> If ownership status is other than Owner, then necessary document in his/her name has to be uploaded</li> -->
+                    </ol>
+                    <li> <b>Property Ownership document</b> - One out of below documents need to be uploaded(Mandatory):</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> Regd Sale Deed - Below mentioned all relevant pages of Regd Sale Deed must be uploaded: First Page, Page mentioning details of both the parties. Registration details page, Pages mentioning Plot Size, Unit Size/Built up Area, Last
+                            page having Signature.</li>
+                        <li> Electricity Bills in the name of Applicant(any 3), Regd Perpetual Lease Deed, Regd Conveyance Deed, Regd GPA, Ntd. GPA with complete backchain, SPA with Regd/Ntd. Agreement to Sell and Will, Will/NOC of the owner in favour of applicant,
+                            Regd Partition Deed , Regd Family settlement, Regd Relinquished Deed, Allotment letter(pvt builder) with regd Sale Deed, Allotment letter(pvt builder) with Regd/Ntd. GPA, Allotment letter(pvt builder), Regd/Ntd. Agreement to
+                            Sell, Rented proprty-Lease/Rent Agreement, NOC, Ownership Proof, DDA Allotment/mutation Letter/Land, Development Letter, Interim Court order</li>
+                    </ol>
+                    <li> <b>Others(wherever applicable)</b> - One out of below documents need to be uploaded:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li> NOC from Owner (If applicant is other than owner along with document of owner), NOC from MCD (If Commercial property is present in Residential Area), NOC from DPCC (If Commercial property is present in Residential)</li>
+                        <li> In case of <b>Bulk Connection</b> the following documents are needed: Layout Plan, Key Plan, Floor Plan, Site Plan, Total Water Demand, Completion Plan, Hydraulic Calculation Plan,</li>
+                        <li> <b>Rain Water Harvesting Certificate</b> (Mandatory for plot size more than 100 sq mt &amp; failure of which will levy penalty as per of rules in regular bills after moratorium period upto 30.06.2022)</li>
+                    </ol>
+                    <li> <b>Signature</b> (File type - .jpg, .jpeg or .png of file size less than 20KB) (Mandatory)</li>
+                    <br>
+
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary closeCheckListDiv">Close</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="checkListRWHDivRef">
+        <div class="card" style="text-align: center;">
+            <div class="card-header">
+                <h4>Checklist for Applying RWH Certificate</h4>
+                <i class="fa fa-times closeCheckListRWHDiv" style="position: absolute;right: 23px;top: 18px;cursor: pointer;"></i>
+            </div>
+            <div class="card-body" style="text-align: justify;  height: 95vh;overflow: auto;">
+                <div>
+                    <button class="btn btn-primary self-declartion-btn RWHForm">Download RWH Sample Form</button>
+                </div>
+                <i> ensure to carry following scanned copy of documents before start of filling online form for RWH Certificate:</i>
+                <ul class="ordeListClass">
+                    <li style="margin-bottom: 10px"> <b>Approved building sanction plan</b>(File type - .jpg, .jpeg, .png or pdf of file size less than 2MB)</li>
+
+                    <i style="margin-left: 10px;"> <u>Please refer below instructions/guidelines to fill the application form:</u></i><br><br>
+                    <li style="margin-bottom: 10px"> Applicant has to enter <b>Correspondence/Site Address</b> of site where Rain Water Harvesting system is installed.</li>
+                    <li style="margin-bottom: 10px"> Under section <b>Required Retention Capacity(in cum)</b> - Applicant has to fill below mentioned details:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Roof Top Area(In Sq m)</b> Applicant has to fill Roof Top Area in square meters
+                            <!-- which is calculated by formula given below -->
+                        </li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Paved/Pucca floor with non-pollution catchment area(In Sq m)</b> Applicant has to fill Paved/Pucca floor with non-pollution catchment area in square meters
+                            <!-- which is calculated by formula given below -->
+                        </li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Total Plot Area(In Sq m)</b> - Applicant has to fill Total Plot Area in square meters.
+                            <!-- which is calculated by formula given below 
+                           
+                               <b>Required Retention Capacity can be calculated by formula</b>
+                               <b>Roof Top Area</b> = Area x .02
+                               <b>Paved/Pucca floor with non-pollution catchment area</b> = Area x 0.15
+                               <b>Total Area</b> = Roof Top Area + Paved/Pucca floor with non-pollution catchment area--></li>
+                    </ol>
+                    <li style="margin-bottom: 10px"> Under section <b>Existing Retention Capacity(in cum)</b> Applicant has to fill below mentioned details:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Size of Pit</b> - Applicant has to select whether Size of Pit is <b>Rectangular</b> or <b>Circular</b>:
+                            <br><br><i class="fa fa-chevron-right hand-color"></i> If applicant selects <b>Size of Pit</b> as <b>Rectangular</b> then below details need to be filled: <b>Length, Breadth &amp; Depth</b> in meter is entered accordingly which
+                            <b>Total capacity</b> in cum is calculated which is calculated by below formula:
+                            <b>Total Capacity</b> = Length * Breadth * Depth
+                            <br><br><i class="fa fa-chevron-right hand-color"></i> If applicant selects <b>Size of Pit</b> as <b>Circular</b> then below details need to be filled: Diameter (Dia) &amp; Depth in meter is entered accordingly which
+                            <b>Total capacity</b> in cum is calculated by below formula:
+                            <b>Total Capacity</b> = 3.14 * (Diameter * Diameter * Depth) / 4
+                        </li>
+                    </ol>
+                    <li style="margin-bottom: 10px"> Under section <b>Details of RWH Pit</b> - Applicant has to select whether RWH Pit is Govt (Government) or Pvt (Private).</li>
+                    <li style="margin-bottom: 10px"> Under section <b>Other parameters for RWH System</b> - Applicant has to fill below mentioned details:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Bypass/Overflow system exist</b> - Applicant has to select <b>Yes/No</b> whether Bypass/Overflow system exists or not.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>System is Functional</b> - Applicant has to select <b>Yes/No</b> whether system is functional or not.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>System is Adequate</b> - Applicant has to select <b>Yes/No</b> whether system is adequate or not.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Proper conveyance system exists</b> - Applicant has to select <b>Yes/No</b> whether proper conveyance system exists or not.</li>
+                    </ol>
+                    <li style="margin-bottom: 10px"> Under section <b>Filter Media Details</b> - Applicant has to fill below mentioned details:</li>
+                    <ol style="padding-left: 5%;" type="A">
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Brick Aggregates 40 to 63 mm, size 0.5m thickness</b> - Applicant has to select <b>Yes/No</b> in this field for the filter size.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Charcoal/Activated carbon 0.1m thickness</b> - Applicant has to select <b>Yes/No</b> whether Charcoal/Activated carbon is of 0.1m thickness or not.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Sand (1.5mm - 2mm), size 0.2m thickness</b> - Applicant has to select <b>Yes/No</b> in this field for the sand size.</li>
+                        <li style="margin-bottom: 10px"><i class="fa fa-chevron-right hand-color"></i> <b>Geo textile membrane</b> - Applicant has to select <b>Yes/No</b> whether Geo textile membrane exists or not.</li>
+                    </ol>
+                    <li style="margin-bottom: 10px"> After submitting all above mentioned details, applicant has to click on <b>Save Details</b> button.</li>
+                </ul>
+                <div style="text-align: center;">
+                    <button class="btn btn-primary closeCheckListRWHDiv">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue"></script>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+            application_data: {
+                PremFor: null,
+                SubLocationValue: null,
+                isThirdParty: null,
+                vfsID: null,
+                zroLocation: null,
+                ApplyFor: null,
+                connectionType: null,
+                profilePic: null,
+                firstName: null,
+                middleName: null,
+                lastName: null,
+                FHname: null,
+                email: null,
+                Mobile: null,
+                home: null,
+                office: null,
+                pinAdd: null,
+                locaAdd: null,
+                subLocAdd: null,
+                hNoAdd: null,
+                RoadNoAdd: null,
+                subLoc1Add: null,
+                subLoc2Add: null,
+                subColAdd: null,
+                vilAdd: null,
+                kNoAdd: null,
+                socnameAdd: null,
+                Property: null,
+                Urban: null,
+                floor: null,
+                bed: null,
+                plot:null,
+                built: null,
+                type_connection: null,
+                Use_Connection: null,
+                Bank: null,
+                Branch: new branch,
+                MICR: null,
+                Account: null,
+                corsAddress: null,
+                pPlan: null,
+                roofTopArea: null,
+                totalPlotArea: null,
+                pavedArea: null,
+                dia: null,
+                depthC: null,
+                totalC: null,
+                length: null,
+                breadth: null,
+                depth: null,
+                total: null,
+                govt: null,
+                overflowSystem: null,
+                functional: null,
+                adeSystem: null,
+                conSys: null,
+                aggre: null,
+                char: null,
+                sand: null,
+                geo: null,
+                ProofIdentityCombo: null,
+                document_proofIdentity: null,
+                document_proofIdentity_upload: null,
+                ownerStatusCombo: null,
+                document_ProofOfResidence_upload: null,
+                PropertyOwnerCombo: null,
+                document_PropertyOwner: null,
+                document_PropertyOwner_upload: null,
+                othersCombo: null,
+                document_Others: null,
+                document_Others_upload: null,
+                vfsID: null,
+                vfsFlag: null,
+                signaturePath: null,
+                declaration: null,
+            }
+        };
+      },
+      methods: {
+        onSubmitApplicationForm() {
+          let application_formdata = new FormData();
+
+		  for(let key in this.application_data){
+			  application_formdata.append(`${key}`, this.application_data[key])
+		  }
+
+		  axios.post("https://djb.gov.in/DJBRMSApp/rest/Services/NewConnection/CreateConnection", application_formdata, {
+			  headers: {
+				  'content-type': 'multipart/form-data'
+			  }
+		  })
+        },
+      },
+    });
+  </script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/debug.js"></script>
+    <script src="../js/newconnection.bundle.js"></script>
+
+</body>
+
+</html>

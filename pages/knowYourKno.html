@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DJB RMS PORTAL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="../css/knowYourKno.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div id="app">
+            {{kno}}
+        <!--Header starts here-->
+        <header class="header_bg"></header>
+        <!--Header ends here-->
+        <!-- **********************************CSS Loader container *******************************************-->
+        <div class="overlay">
+            <div class="overlay__inner">
+                <div class="overlay__content">
+                    <span class="spinner"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid" style="margin-top: 30px;">
+            <div class="card">
+                <div class="card-header neCon-card-header">
+                    <h4>Know Your KNO</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 offset-md-2">
+                            <div class="form-check" style="text-align:center">
+                                <input class="form-check-input" type="radio" id="searchByMob" name="search">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                        Know your KNO by Mobile Number
+                    </label>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-check" style="text-align:center">
+                                <input class="form-check-input" type="radio" id="searchByAdd" name="search">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                        Know your KNO by Address
+                    </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-sm-12 col-md-4"></div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group form-mob">
+                                <label for="kno">Search By Mobile Number <span>*</span></label>
+                                <input v-model="kno.search_by_mobno" type="text" placeholder="Search By Mobile Number">
+                            </div>
+                            <div class="col-auto form-mob" style="text-align:center">
+                                <button @click="onSubmitByMobNo()" type="submit" class="btn btn-primary mb-3">Search</button>
+                                <!-- onclick="insertData.searchKnow('mob')" -->
+                            </div>
+                            <div class="form-group form-add">
+                                <label for="kno">Search By Address <span>*</span></label>
+                                <input type="text" v-model="kno.search_by_address" placeholder="Search By Address">
+                            </div>
+                            <div class="col-auto form-add" style="text-align:center">
+                                <button @click="onSubmitByAddress()" type="submit" class="btn btn-primary mb-3">Search</button>
+                                <!-- onclick="insertData.searchKnow('add')" -->
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="table-responsive userData" style="height: 300px;">
+                                <table class="table table-bordered" id="knowYourKno">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">KNO</th>
+                                            <th scope="col">ZONE</th>
+                                            <th scope="col">LOCATION</th>
+                                            <th scope="col">ADDRESS</th>
+                                            <th scope="col">MOBILE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mutationModel" id="mutationModelBtn" style="visibility: hidden;"></button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="mutationModel" tabindex="-1" role="dialog" aria-labelledby="mutationModelLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mutationModelLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                        </div>
+                        <div class="modal-body" id="modelBody">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a href="#" type="button" class="btn btn-primary" id="externalLink" style="display: none;">Save changes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data(){
+          return {
+            kno: {
+                search_by_mobno: null,
+                search_by_address: null
+            },
+          }
+        },
+        methods: {
+          onSubmitByMobNo(){
+            axios.get(`https://djb.gov.in/DjbPortalApi/rest/serviceApi/findKNO?mobile=${this.kno.search_by_mobno}&&name=${this.kno.search_by_address}&_=1639590653999`)
+            .then((res)=> {console.log(res)})
+            .catch((err)=> console.log(err))
+          },
+          onSubmitByAddress(){
+            let uri = this.kno.search_by_address
+            let encoded = encodeURIComponent(uri)
+            axios.get(`https://djb.gov.in/DjbPortalApi/rest/serviceApi/findKNO?mobile=${this.kno.search_by_mobno}&&name=${encoded}&_=1639590654000`)
+            .then((res)=> {console.log(res)})
+            .catch((err)=> console.log(err))
+          }
+        }
+      });
+    </script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/knowyourkno.bundle.js"></script>
+
+</body>
+
+</html>

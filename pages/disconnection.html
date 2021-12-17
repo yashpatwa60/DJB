@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DJB RMS PORTAL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="../css/disconnection.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div id="app">
+    <!--Header starts here-->
+    <header class="header_bg"></header>
+    <!--Header ends here-->
+    <!-- **********************************CSS Loader container *******************************************-->
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="margin-top: 30px;">
+        <div class="card">
+            <div class="card-header neCon-card-header">
+                <h4>Application Form for Disconnection / Reopening</h4>
+            </div>
+            <div class="card-body">
+                <div id="validateKNO">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4"></div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group">
+                                <label for="KNO">KNO <span style="color:red"> * </span></label>
+                                <input type="text" class="form-control" v-model="KNO" placeholder="KNO">
+                                <i class="fa fa-check-circle checkValidKnoIcon"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <button class="btn btn-primary" @click="onSubmit()">Submit</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="viewDisconnPage">
+                    <form name="disConnectionForm" id="disConnectionForm">
+                        <input type="hidden" v-model="application_data.PersonName" >
+                        <input type="hidden" v-model="application_data.PersonId" >
+                        <input type="hidden" v-model="application_data.Kno" >
+                        <input type="hidden" v-model="application_data.ServiceAggType" >
+                        <input type="hidden" v-model="application_data.AcctInfo" >
+                        <input type="hidden" v-model="application_data.PremiseID" >
+
+                        <fieldset>
+                            <legend>Application Details:</legend>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3">
+                                    <h5 class="disConnH5">Application For :</h5>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ApplyFor" " value="CM_DISCON">
+                                        <label class="form-check-label" for="ApplyFor">
+                                         Disconnection
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ApplyFor" value="CM_REOPEN">
+                                        <label class="form-check-label" for="ApplyFor">
+                                       Reopening
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-3">
+
+                                </div>
+                            </div>
+                            <div id="typeOfDisDiv">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3">
+                                        <h5 class="disConnH5">Type of Disconnection :</h5>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" v-model="application_data.Type" value="TEMP">
+                                            <label class="form-check-label" for="Type">
+                                            Temporary Disconnection
+                                    </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" v-model="application_data.Type" value="PERM">
+                                            <label class="form-check-label" for="Type">
+                                            Permanent Disconnection 
+                                    </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div id="viewDisconnData">
+                            <fieldset>
+                                <legend>Reason For Disconnecting/Reopening:</legend>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <textarea class="form-control" rows="5" v-model="application_data.Comments"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Contact Details:</legend>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3">
+                                        <h5 class="disConnH5">Preferred Contact Type: :</h5>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ContactType"  value="LAND" checked>
+                                        <label class="form-check-label" for="ContactType">
+                                        LandLine
+                                    </label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <input class="form-check-input" type="radio"v-model="application_data.ContactType" value="EM">
+                                        <label class="form-check-label" for="ContactType">
+                                       Email
+                                    </label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <input class="form-check-input" type="radio" v-model="application_data.ContactType" value="PH">
+                                        <label class="form-check-label" for="ContactType">
+                                        Mobile
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="office">LandLine Number</label>
+                                            <input type="text" class="form-control" v-model="application_data.PhnNum" placeholder="LandLine Number">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="email">Email Id</label>
+                                            <input type="text" class="form-control" v-model="application_data.EmailId"  placeholder="Email Id">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="Mobile">Mobile Number<span style="color:red"> * </span></label>
+                                            <input type="text" class="form-control" v-model="application_data.MobNum" placeholder="Mobile Number">
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Documents To Be Attached (Max Size 1 MB) :</legend>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="ProofIdentityCombo">Proof Of Identity <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.ProofIdentityCombo" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="DocNo">Document No <span style="color:red"> * </span> </label>
+                                            <input type="text" class="form-control" v-model="application_data.DocNo"  placeholder="Proof Of Identity Document">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label for="Document_proofIdentity">PhotoCopy Of Proof Of Identity <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.Document_proofIdentity">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="Document_proofLastBill">Photocopy of Last Paid Bill <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.Document_proofLastBill">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="ownershipDoc">Ownership Document <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.ownershipDoc" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="profilePic">Profile Photo <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.profilePic" >
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label for="signature">Signature <span style="color:red"> * </span><i class="fa fa-info-circle" style="cursor: pointer;" title="Please Upload valid image(.jpg|.jpeg|.gif|.png|.bmp|.pdf) file. File Size should be less than 5mb."></i></label>
+                                            <input type="file" class="form-control-file" v-model="application_data.signature" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Declaration</legend>
+                                <p>I hereby declare that all the information furnished by me is true to the best of my knowledge and if any discrepancies are found, I will be responsible for legal action.</p>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Submitted By</legend>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <input type="hidden" class="textbox" v-model="application_data.vfsID" >
+                                            <label for="vfsFlag">Submitted By <span style="color:red"> * </span> </label>
+                                            <select v-model="application_data.vfsFlag" class="form-control">
+                                            <!-- <option value="SELF" selected="selected">SELF</option> -->
+										<!-- <Option value="VFS">M SAHAYAK</Option> -->
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="application_data.declaration" >
+                                            <label class="form-check-label" for="declaration">
+                                            I accept all the terms and conditions specified above.
+                                        </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <div>
+                                            <button class="btn btn-primary" id="applyNewConnection">Submit</button>
+                                            <button class="btn btn-primary" id="previewConn">Preview</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mutationModel" id="mutationModelBtn" style="visibility: hidden;"></button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="mutationModel" tabindex="-1" role="dialog" aria-labelledby="mutationModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mutationModelLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body" id="modelBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="#" type="button" class="btn btn-primary" id="externalLink" style="display: none;">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="successDivRef">
+        <div class="card" style="text-align: center;">
+            <div class="card-header">
+                <h4>New Connection Reciept</h4>
+                <i class="fa fa-times" style="position: absolute;right: 23px;top: 18px;cursor: pointer;" id="closeSuccesDiv"></i>
+            </div>
+            <div class="card-body" id="recieptForm">
+                <p style="text-align: center;font-size: 22px;margin: 0px 0px 20px 0px;">Application Details</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Applican't Name</th>
+                                <td id="appliName">ss</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">Application Type</th>
+                                <td id="appliType">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Application Ref No</th>
+                                <td id="appliRef">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Built Up Area(Sq m)</th>
+                                <td id="appliBuilt">ss</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date Of Submissions</th>
+                                <td id="appliDate">ss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="downlaodReciept" style="margin-bottom: 20px;">Acknowledge Reciept</button>
+                <a href="#" class="btn btn-primary" id="filledApplication" style="margin-bottom: 20px;">Download filled application form</a>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+  <script src="https://unpkg.com/vue"></script>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          KNO: null,
+          application_data: {
+                PersonName: null,
+                PersonId: null,
+                Kno: null,
+                ServiceAggType: null,
+                AcctInfo: null,
+                PremiseID: null,
+                ApplyFor: null,
+                Type: null,
+                //more vars here
+          }
+        };
+      },
+      methods: {
+        onSubmit() {
+		  axios.get(`https://djb.gov.in/DJBRMSApp/rest/Services/Disconnection/DisconOnload/${KNO}?_=1639668118064`)
+          .then((res)=> console.log(res))
+          .catch((err)=> console.log(err))
+        },
+        onPreview(){
+            axios.post()
+            .then((res)=> console.log(res))
+            .catch((res)=> console.log(res))
+        }
+      },
+    });
+  </script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/disConnection.bundle.js"></script>
+
+</body>
+
+</html>

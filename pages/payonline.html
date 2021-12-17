@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DJB RMS PORTAL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="../css/payonline.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div id="app">
+    <!--Header starts here-->
+    <header class="header_bg"></header>
+    <!--Header ends here-->
+    <!-- **********************************CSS Loader container *******************************************-->
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="margin-top: 30px;">
+        <div class="card">
+            <div class="card-header neCon-card-header">
+                <h4>Pay Online</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-3"></div>
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-group">
+                            <label for="KNO">KNO (Get Bill Details) <span style="color:red"> * </span></label>
+                            <input type="text" class="form-control" v-model="KNO" placeholder="KNO">
+                            <i class="fa fa-check-circle checkValidKnoIcon"></i>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                        <button class="btn btn-primary" style="margin-top: 31px;" @click="onSubmit()">Get Details</button>
+                    </div>
+                </div>
+                <div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+                    <fieldset class="billDataDiv">
+                        <legend>Bill Details :</legend>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <label>Name </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <label>Address </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billAdr"></span>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <label>Bill Date </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billDate"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <label>Bill Due Date </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billDue"></span>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <label>Bill Number </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billNum"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <label>Bill Amount </label><span style="float: right; font-weight: bold;">:</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <span id="billAmt"></span>
+                            </div>
+
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <fieldset class="bankDataDiv">
+                            <legend>Please choose any link of the Payment Gateway Service Provider :</legend>
+                            <div class="row bankDataItr">
+
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card" style="margin-top: 40px;">
+            <div class="card-header neCon-card-header">
+                <h4>Pay through NEFT/RTGS</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <fieldset>
+                            <legend>Payment may be made through NEFT/RTGS to any of the Authorised Bank:</legend>
+                            <!-- <div class="row">
+                                <div></div>
+                            </div> -->
+                            <div class="responsive-table">
+
+                                <table width="100%" class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td width="20%"><b>Particular to be filled by the consumer</b></td>
+
+                                            <td width="20%"><b>Kotak Mahindra Bank Ltd.</b></td>
+                                            <td width="20%"><b>South Indian Bank Ltd.</b></td>
+                                            <td width="20%"><b>IDBI Bank</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Beneficiary Name</td>
+
+                                            <td width="20%">Delhi Jal Board</td>
+                                            <td width="20%">Delhi Jal Board</td>
+                                            <td width="20%">Delhi Jal Board</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Bank A/c No.(If payment to be transferred to DJB virtual A/c No. for automatic posting of payment)</td>
+
+                                            <td width="20%">DJB 10 digit New KNO (Alphanumeric 13 characters i.e, DJB followed by 10 digits K.NO of water connection mentioned on the bill, without any brackets or space)</td>
+                                            <td width="20%">"DJB" followed by DJB 10 digits New KNO (Alphanumeric 13 characters i.e. DJB followed by 10 digit KNO of water connection mentioned on the bill, without any brackets or space) e.g. DJB9135600000 if KNO is 9135600000
+                                            </td>
+                                            <td width="20%">Format = prefix "V00DJB" followed by 10 digits K.NO of water connection mentioned on the bill, without any brackets or space) e.g. V00DJB9135600000 if KNO is 9135600000</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">IFSC Code</td>
+
+                                            <td width="20%">KKBK0000214</td>
+                                            <td width="20%">SIBL0000117</td>
+                                            <td width="20%">IBKL0000550</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Account Type</td>
+
+                                            <td width="20%">Current</td>
+                                            <td width="20%">Current account</td>
+                                            <td width="20%">Current account</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Branch</td>
+
+                                            <td width="20%">Connaught Place</td>
+                                            <td width="20%">NEW DELHI-KAROL BAGH</td>
+                                            <td width="20%">IDBI BANK LTD, Karol Bagh,New Delhi</td>
+                                        </tr>
+                                        <!-- Start : Added by Lovely on 22-02-2018 as per Jtrac-DJB-4793. -->
+                                        <tr>
+                                            <td width="20%">Address</td>
+
+                                            <td width="20%">G 39, Outer Circle, Connaught Place ,New Delhi:110001</td>
+                                            <td width="20%">PLOT NO 18 PUSA ROAD OPP METRO PILLAR NO 94 KAROL BAGH</td>
+                                            <td width="20%">IDBI BANK LTD, 51/3, Desh Bandhu Gupta Road, Karol Bagh (Opposite Khalsa College), New Delhi Pin :110005</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Contact</td>
+
+                                            <td width="20%">8860635442</td>
+                                            <td width="20%">Shashank Parashar - 9999411191 Arti Dixit - 8058862171</td>
+                                            <td width="20%">Shri. Aditya Gupta(Implementation Manager, IDBI Bank Ltd, CMS Delhi)Mobile No - 9818346194</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%">Email</td>
+
+                                            <td width="20%">avichal.jain@kotak.com , joginderdjb@yahoo.com</td>
+                                            <td width="20%">Br0117@sib.co.in</td>
+                                            <td width="20%">cmsgbg.delhi@idbi.co.in</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mutationModel" id="mutationModelBtn" style="visibility: hidden;"></button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="mutationModel" tabindex="-1" role="dialog" aria-labelledby="mutationModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mutationModelLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body" id="modelBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="#" type="button" class="btn btn-primary" id="externalLink" style="display: none;">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="visibility: hidden;">
+        <form name="paymentForm" id="paymentForm" method="post">
+            <input type="text" name="paymentGateway" id="paymentGateway" class="inputBorder" readonly="readonly">
+            <input type="hidden" name="paymentGatewayUrl" id="paymentGatewayUrl" />
+        </form>
+    </div>
+
+    <div style="visibility: hidden;">
+        <form name="paymentFormUBI" id="paymentFormUBI" method='post'>
+        </form>
+    </div>
+
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          KNO: null
+        };
+      },
+      methods: {
+        onSubmit() {
+		  axios.get(`https://djb.gov.in/DJBRMSApp/rest/Services/Payment/FetchBillData/${KNO}?_=1639667587628`)
+          .then((res)=> console.log(res))
+          .catch((err)=> console.log(err))
+        },
+      },
+    });
+  </script>
+
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/payonline.bundle.js"></script>
+    <!--UAT -->
+    <!-- <script type="text/javascript" id="resourceScript" src="https://services.billdesk.com/checkout-widget/src/app.bundle.js" async=""></script> -->
+    <!--PROD -->
+    <script type="text/javascript" id="resourceScript" src="https://pgi.billdesk.com/payments-checkout-widget/src/app.bundle.js" async></script>
+
+</body>
+
+</html>

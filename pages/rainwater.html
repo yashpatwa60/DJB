@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+     <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <h2 class="title">Application Form for Rain Water Harvesting</h2>
+        <div class="columns is-multiline">
+          <div class="column is-2">
+            <b-field label="Name">
+              <b-input></b-input>
+            </b-field>
+          </div>
+          <div class="column is-2">
+            <b-field label="Phone">
+              <b-input type="number" min="10"> </b-input>
+            </b-field>
+          </div>
+          <div class="column is-2">
+            <b-field label="Email">
+              <b-input type="email"></b-input>
+            </b-field>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column is-6">
+            <b-field label="Address">
+              <b-input maxLength="50" type="textarea"></b-input>
+            </b-field>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column is-6">
+            <b-field label="RainWater Harvesting Site Address">
+              <b-input maxLength="50" type="textarea"></b-input>
+            </b-field>
+          </div>
+        </div>
+        <h2 class="title">Required Retention Capacity(in cum)</h2>
+        <div class="columns is-multiline">
+          <div class="column is-6">
+            <b-field label="Roof Top Area(In Sq m)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-6">
+            <b-field
+              label="Paved/Pucca floor with non-pollution catchment area(In Sq m)"
+            >
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-6">
+            <b-field label="Total Plot Area(In Sq m)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+        </div>
+        <h2 class="title">Existing Retention Capacity(in cum)</h2>
+        <div class="columns is-multiline">
+          <div class="column is-12">
+            <b-field label="Size of pit">
+              <b-select placeholder="Rectangular" rounded>
+                <option value="flint">Rectangular</option>
+                <option value="silver">Circular</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Length(m)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Breadth(m)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Depth(m)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Total(cum)">
+              <b-input type="number"></b-input>
+            </b-field>
+          </div>
+        </div>
+        <h2 class="title">Details of RWH pit</h2>
+        <div class="columns is-multiline">
+          <div class="column is-12">
+            <b-field label="Is Govt/Pvt">
+              <b-select placeholder="Govt" rounded>
+                <option value="flint">Govt</option>
+                <option value="silver">Pvt</option>
+              </b-select>
+            </b-field>
+          </div>
+        </div>
+        <h2 class="title">Other Parameters for RWH system</h2>
+        <div class="columns is-multiline">
+          <div class="column is-4">
+            <b-field label="Bypass/Overflow system exist">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-4">
+            <b-field label="System is Functional">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+        </div>
+        <div class="columns is-multiline">
+          <div class="column is-4">
+            <b-field label="System is Adequate">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-4">
+            <b-field label="Proper conveyance system exists">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+        </div>
+        <h2 class="title">Filter Media details</h2>
+        <div class="columns is-multiline">
+          <div class="column is-4">
+            <b-field label="Aggregates 40 to 63 mm, size 0.5m thickness">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-4">
+            <b-field label="Charcoal/Activated carbon 0.1m thickness">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+        </div>
+        <div class="columns is-multiline">
+          <div class="column is-4">
+            <b-field label="Sand 1.5mm, 2mm, size 0.2m thickness">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-4">
+            <b-field label="Geo textile membrane">
+              <b-select placeholder="Yes" rounded>
+                <option value="flint">Yes</option>
+                <option value="silver">No</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-12">
+            <b-field
+              label="Upload approved building sanction plan*"
+              class="file is-primary"
+              :class="{'has-name': !!file}"
+            >
+              <b-upload v-model="file" class="file-label">
+                <span class="file-cta">
+                  <b-icon class="file-icon" icon="upload"></b-icon>
+                  <span class="file-label">Click to upload</span>
+                </span>
+                <span class="file-name" v-if="file"> {{ file.name }} </span>
+              </b-upload>
+            </b-field>
+          </div>
+          <div class="column is-12">
+            <b-button type="is-success">Submit</b-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+    <!-- Full bundle -->
+    <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data(){
+          return {
+
+          }
+        },
+        methods: {
+          
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+      integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css"
+    />
+    <style>
+      .top-bg {
+        background-color: #c2f0f0;
+      }
+      .top-head {
+        display: flex;
+      }
+      .top-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-size: 2em;
+        line-height: 1.2em;
+        color: #2b407f;
+      }
+      .bottom-bg {
+        background-color: #c2f0f0;
+      }
+      .bottom-footer {
+        margin: 60px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- header -->
+      <header class="top-bg">
+        <div class="container top-head">
+          <img
+            src="../images/logo.png"
+            style="height: 100px; width: 100px"
+            alt=""
+          />
+          <h1 class="top-title">
+            Revenue Management System <br />
+            Delhi Jal Board
+          </h1>
+        </div>
+      </header>
+      <!-- content -->
+      <div class="container mt-5">
+        <div class="columns is-centered">
+          <div class="column is-6">
+            <div class="container is-max-desktop">
+              <h2 class="title">Request/Grievance Submission</h2>
+              <h4 class="subtitle mt-2 has-text-weight-semibold">
+                Consumer Details
+              </h4>
+              <p class="mb-3">
+                **For Water unavailability/ Quality issues, contact DJB Central
+                Control Room.
+              </p>
+              <div class="columns is-multiline">
+                <div class="column is-4">
+                  <b-field label="KNO">
+                    <b-input
+                      @input="sendConsumerId()"
+                      v-model="application_data.ConsumerId"
+                    ></b-input>
+                  </b-field>
+                </div>
+                <div class="column is-4">
+                  <b-field label="Name" :type="isSuccess ? 'is-success': ''">
+                    <b-input disabled v-model="application_data.Name"></b-input>
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field
+                    label="Address"
+                    type="is-small"
+                    :type="isSuccess ? 'is-success': ''"
+                  >
+                    <b-input
+                      v-model="application_data.Address"
+                      maxLength="50"
+                      disabled
+                      type="textarea"
+                    ></b-input>
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-4">
+                  <b-field label="UID">
+                    <b-input
+                      v-model="application_data.UID"
+                      type="text"
+                      :controls="false"
+                    ></b-input>
+                  </b-field>
+                </div>
+              </div>
+              <h4 class="subtitle has-text-weight-semibold">
+                Request/Grievance Details
+              </h4>
+              <div class="columns is-multiline">
+                <div class="column is-4">
+                  <b-field label="Case Category">
+                    <b-select
+                      placeholder="Select"
+                      @input="fetchOptionsData()"
+                      v-model="application_data.Case_Category"
+                    >
+                      <option value="ACCT">Account Related</option>
+                      <option value="MRT">Meter Related</option>
+                      <option value="BIL">Billing Related</option>
+                      <option value="PMT">Payment Related</option>
+                    </b-select>
+                  </b-field>
+                </div>
+                <div class="column is-4">
+                  <b-field label="Request/Grievance Type">
+                    <b-select
+                      v-model="application_data.Complain_Type"
+                      placeholder="Please Select"
+                    >
+                      <option
+                        v-for="(option, key) in option_data"
+                        :key="`OPTION${key}`"
+                      >
+                        {{option.complainName}}
+                      </option>
+                    </b-select>
+                  </b-field>
+                </div>
+                <div class="column is-12">
+                  Upload Document
+                  <b-field
+                    class="file is-primary"
+                    :class="{'has-name': !!file}"
+                  >
+                    <b-upload
+                      v-model="application_data.grievancefile"
+                      class="file-label"
+                    >
+                      <span class="file-cta">
+                        <b-icon class="file-icon" icon="upload"></b-icon>
+                        <span class="file-label">Click to upload</span>
+                      </span>
+                      <span
+                        class="file-name"
+                        v-if="application_data && application_data.grievancefile"
+                      >
+                        {{ application_data.grievancefile.name }}
+                      </span>
+                    </b-upload>
+                  </b-field>
+                </div>
+                <div
+                  v-if="application_data.Case_Category==='PMT'"
+                  class="column is-6"
+                >
+                  <b-field
+                    v-model="application_data.receiptId"
+                    label="Receipt Id/Transaction Id*"
+                  >
+                    <b-input type="text"></b-input>
+                  </b-field>
+                  <b-field label="Additional Details" type="is-small">
+                    <b-input maxLength="50" type="textarea"></b-input>
+                  </b-field>
+                  Upload Document
+                  <b-field
+                    class="file is-primary"
+                    type="is-small"
+                    :class="{'has-name': !!file}"
+                  >
+                    <b-upload
+                      v-model="application_data.file"
+                      class="file-label"
+                    >
+                      <span class="file-cta">
+                        <b-icon class="file-icon" icon="upload"></b-icon>
+                        <span class="file-label">Click to upload</span>
+                      </span>
+                      <span
+                        class="file-name"
+                        v-if="application_data && application_data.file"
+                      >
+                        {{ application_data.file.name }}
+                      </span>
+                    </b-upload>
+                  </b-field>
+                </div>
+              </div>
+              <section
+                v-if="application_data.Case_Category==='ACCT' && application_data.Complain_Type=='Correction of Address'"
+              >
+                <div class="columns">
+                  <div class="column is-2">
+                    <b-field label="BillAddress">
+                      <b-checkbox></b-checkbox>
+                    </b-field>
+                  </div>
+                  <div class="column is-2">
+                    <b-field label="HouseAddress">
+                      <b-checkbox></b-checkbox>
+                    </b-field>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-4">
+                    <b-field label="PinCode*">
+                      <b-input
+                        @input="fetchLocality()"
+                        v-model="pincode"
+                        type="number"
+                      ></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-3">
+                    <b-field label="Locality*">
+                      <!-- fetch options -->
+                      <b-select
+                        @input="fetchSubLocality()"
+                        v-model="locality"
+                        placeholder="Please Select"
+                        rounded
+                      >
+                        <option
+                          v-for="(option,key) in locaAddList"
+                          :key="`LOCA${key}`"
+                        >
+                          {{option.locaAddCombo}}
+                        </option>
+                      </b-select>
+                    </b-field>
+                  </div>
+                  <div class="column is-3">
+                    <b-field label="Sub Locality*">
+                      <!-- fetch options -->
+                      <b-select placeholder="Please Select" rounded>
+                        <option
+                          v-for="(option,key) in subLocAddList"
+                          :key="`SUBLOCA${key}`"
+                        >
+                          {{option.subLocAddCombo}}
+                        </option>
+                      </b-select>
+                    </b-field>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-2">
+                    <b-field label="JJ Resettlement Colony">
+                      <b-checkbox></b-checkbox>
+                    </b-field>
+                  </div>
+                  <div class="column is-3">
+                    <b-field label="House No*">
+                      <b-input type="number"></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-3">
+                    <b-field label="Road No">
+                      <b-input type="number"></b-input>
+                    </b-field>
+                  </div>
+                </div>
+              </section>
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field
+                    label="Request/Grievance Description"
+                    type="is-small"
+                  >
+                    <b-input
+                      v-model="application_data.CaseDescription"
+                      maxLength="50"
+                      type="textarea"
+                    ></b-input>
+                  </b-field>
+                </div>
+              </div>
+              <h4 class="subtitle has-text-weight-semibold">Contact Details</h4>
+              <div class="columns is-multiline">
+                <div class="column is-3">
+                  <b-field label="Mobile Number">
+                    <b-input
+                      v-model="application_data.mobilenumber"
+                      type="text"
+                    ></b-input>
+                  </b-field>
+                </div>
+                <div class="column is-3">
+                  <b-field label="Preferred Contact Type*">
+                    <b-checkbox>Mobile</b-checkbox>
+                  </b-field>
+                </div>
+                <div class="column is-12">
+                  <b-button type="is-success" @click="onSubmitGrievance()"
+                    >Submit</b-button
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- navbar -->
+      <footer class="bottom-bg">
+        <div class="container bottom">
+          <div class="columns bottom-footer">
+            <div class="column">
+              <h4>
+                ©Delhi Jal Board, 2012 <br />
+                All Rights Reserved.
+              </h4>
+            </div>
+            <div class="column">
+              <h6>Terms and Conditions | Copyright Policy</h6>
+              <p>
+                For best view and online transactions, Please use Internet
+                Explorer V8.0 and above
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+    <!-- Full bundle -->
+    <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            isLoading: true,
+            isSuccess: false,
+            option_data: [],
+            locality: null,
+            isCorrectionAddress: true,
+            pincode: null,
+            locaAddList: [],
+            subLocAddList: [],
+            application_data: {
+              ConsumerId: null,
+              Name: null,
+              Address: null,
+              UID: null,
+              CaseDescription: null,
+              file: null,
+              grievancefile: null,
+              receiptId: null,
+              Case_Category: null,
+              Complain_Type: null,
+              mobilenumber: null,
+              phonenumber: null,
+              Email: null,
+              fileReceipt: null,
+              Contact: null,
+            },
+          };
+        },
+        methods: {
+          fetchLocality() {
+            axios
+              .get(
+                `https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/FetchData/populateAreaAdd/${this.pincode}`,
+                {
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+                this.locaAddList = res.data.locaAddList;
+              })
+              .catch((err) => console.log(err));
+          },
+          fetchSubLocality() {
+            axios
+              .get(
+                `https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/FetchData/populateSubAreaAdd/${this.locality}`,
+                {
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+                this.subLocAddList = res.data.subLocAddList;
+              })
+              .catch((err) => console.log(err));
+          },
+          fetchOptionsData() {
+            this.isLoading = true;
+            axios
+              .get(
+                `https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/FetchData/case/${this.application_data.Case_Category}`,
+                {
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+                }
+              )
+              .then((res) => {
+                let objList = res.data.objList;
+                console.log(objList);
+                this.option_data = objList;
+                this.isLoading = false;
+              })
+              .catch((err) => console.log(err));
+          },
+          sendConsumerId() {
+            axios
+              .get(
+                `https://djb.gov.in/DJBRMSApp/rest/Services/Consumer/validateKNO/${this.application_data.ConsumerId}`,
+                {
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+                }
+              )
+              .then((res) => {
+                let userData = res.data.userVo.consumerBean;
+                let user_name = userData.Name;
+                let user_address = userData.HouseNo;
+                this.application_data.Address = user_address;
+                this.application_data.Name = user_name;
+                console.log(res);
+                if (res.data.knoFlag != "INVALID") {
+                  this.isSuccess = true;
+                }
+              })
+              .catch((err) => console.log(err));
+          },
+          onSubmitGrievance() {
+            let form_data = new FormData();
+
+            for (let key in this.application_data) {
+              form_data.append(`${key}`, this.application_data[key]);
+            }
+            axios
+              .post(
+                "https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/Registration",
+                form_data,
+                {
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+                }
+              )
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => console.log(err));
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
