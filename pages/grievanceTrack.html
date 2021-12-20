@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grieveance Tracking</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+      integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div class="container mt-6">
+        <h1 class="title">Griveance Tracking</h1>
+        <div class="columns is-multiline">
+          <div class="column is-3">
+            <b-field  label="KNO">
+              <b-input placeholder="Enter your kno" v-model="kno" type="text"></b-input>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Complaint Type">
+              <b-select placeholder="Select Complaint type" v-model="complaint_type">
+                <option value="ALL">ALL</option>
+                <option value="CM_WRNGBILL">
+                  Wrong bill amount (Error in calculation/Wrong meter reading)
+                </option>
+                <option value="CM_WRGCATBL">
+                  Wrong Imposition Of Billing Category
+                </option>
+                <option value="CM_DISCONOPN">
+                  Pending for Disconnection/Reopening
+                </option>
+                <option value="CM_NEWCONN">
+                  Pending For New Connection Release
+                </option>
+                <option value="CM_MTOTHR">Others</option>
+                <option value="CM_ONPMTDSPT">Online Payment Dispute</option>
+                <option value="CM_BILLRCVD">Non Receipt Of Bill</option>
+                <option value="CM_MTSTCK">Meter Stuck Up</option>
+                <option value="CM_MTRNE">
+                  Meter Replacement Not Effective
+                </option>
+                <option value="CM_MTRLEAK">
+                  Meter Leaking/Seal Broken/Glass Broken
+                </option>
+                <option value="CM_MTDST">Meter Dusty</option>
+                <option value="CM_LESTIMEBL">
+                  Less Time Given to Deposit Bill
+                </option>
+                <option value="CM_BLLATE">
+                  Late Receipt of Bill/Late Posting
+                </option>
+                <option value="CM_LPCDISPT">
+                  Late Payment Surcharge Dispute
+                </option>
+                <option value="CM_DPLCTBL">Issue of Duplicate Bill</option>
+                <option value="CM_WRMTRDG">Incorrect Meter Reading</option>
+                <option value="CM_SRCHRGAMT">
+                  Inclusion Of Surcharge Amount
+                </option>
+                <option value="CM_FSTMTRC">Fast Meters</option>
+                <option value="CM_CVLBLDSPT">
+                  Dispute Regarding Cost of Water Related to Civil Construction
+                  Activites
+                </option>
+                <option value="CM_DCSPT">Development Charge Dispute</option>
+                <option value="CM_OPAYDISPT">
+                  Coumter/Bank Payment Dispute
+                </option>
+                <option value="CM_MUTACCT">Correction of Name</option>
+                <option value="CM_ADDCHNG">Correction Of Address</option>
+                <option value="CM_CATCHNG">Category Change</option>
+                <option value="CM_ARRDSPT">Arrears Dispute</option>
+                <option value="CM_SRCHRGDSP">
+                  Additional Charge/Surcharge Dispute
+                </option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-3">
+            <b-field label="Status Value">
+              <b-select placeholder="Select Status Value" v-model="status_value">
+                <option value="ALL">All</option>
+                <option value="INIT">Initiated</option>
+                <option value="INTM">In Progress</option>
+                <option value="FINL">Closed</option>
+              </b-select>
+            </b-field>
+          </div>
+          <div class="column is-12">
+              <b-button @click="onSubmitFormData()">Submit</b-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://unpkg.com/vue"></script>
+  <!-- Full bundle -->
+  <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          kno: null,
+          complaint_type: null,
+          status_value: null
+        };
+      },
+      methods: {
+          onSubmitFormData(){
+              axios.get(`https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/TrackGrievance/${this.kno}/${this.complaint_type}/${this.status_value}`,{
+                  headers: {
+                    authorization:
+                      "9DIc4QllN1uEzjaS3LitMeAoo5cbeJ7FSHfG4AfHUwk=",
+                  },
+              })
+              .then((res)=> cosnole.log(res))
+              .catch((err)=> console.log(err))
+          }
+      }
+      
+    });
+  </script>
+</html>

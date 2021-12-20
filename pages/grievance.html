@@ -62,7 +62,7 @@
       <!-- content -->
       <div class="container mt-5">
         <div class="columns is-centered">
-          <div class="column is-6">
+          <div class="column is-8">
             <div class="container is-max-desktop">
               <h2 class="title">Request/Grievance Submission</h2>
               <h4 class="subtitle mt-2 has-text-weight-semibold">
@@ -72,8 +72,9 @@
                 **For Water unavailability/ Quality issues, contact DJB Central
                 Control Room.
               </p>
+            <form method="post" enctype="multipart/form-data">
               <div class="columns is-multiline">
-                <div class="column is-4">
+                <div class="column is-6">
                   <b-field label="KNO">
                     <b-input
                       @input="sendConsumerId()"
@@ -81,7 +82,7 @@
                     ></b-input>
                   </b-field>
                 </div>
-                <div class="column is-4">
+                <div class="column is-6">
                   <b-field label="Name" :type="isSuccess ? 'is-success': ''">
                     <b-input disabled v-model="application_data.Name"></b-input>
                   </b-field>
@@ -104,7 +105,7 @@
                 </div>
               </div>
               <div class="columns">
-                <div class="column is-4">
+                <div class="column is-6">
                   <b-field label="UID">
                     <b-input
                       v-model="application_data.UID"
@@ -118,7 +119,7 @@
                 Request/Grievance Details
               </h4>
               <div class="columns is-multiline">
-                <div class="column is-4">
+                <div class="column is-6">
                   <b-field label="Case Category">
                     <b-select
                       placeholder="Select"
@@ -132,15 +133,17 @@
                     </b-select>
                   </b-field>
                 </div>
-                <div class="column is-4">
+                <div class="column is-6">
                   <b-field label="Request/Grievance Type">
                     <b-select
+                      @input="fetchOptionMessage()"
                       v-model="application_data.Complain_Type"
                       placeholder="Please Select"
                     >
                       <option
                         v-for="(option, key) in option_data"
                         :key="`OPTION${key}`"
+                        :value="option.ComplainType"
                       >
                         {{option.complainName}}
                       </option>
@@ -148,10 +151,10 @@
                   </b-field>
                 </div>
                 <div class="column is-12">
-                  Upload Document
+                  <h5 class="mb-2">Upload Document</h5>
                   <b-field
                     class="file is-primary"
-                    :class="{'has-name': !!file}"
+                    :class="{'has-name': !!application_data.grievancefile}"
                   >
                     <b-upload
                       v-model="application_data.grievancefile"
@@ -170,27 +173,28 @@
                     </b-upload>
                   </b-field>
                 </div>
+                <p></p>
                 <div
                   v-if="application_data.Case_Category==='PMT'"
-                  class="column is-6"
+                  class="column is-8"
                 >
                   <b-field
                     v-model="application_data.receiptId"
                     label="Receipt Id/Transaction Id*"
                   >
-                    <b-input type="text"></b-input>
+                    <b-input v-model="application_data.receiptId" type="text"></b-input>
                   </b-field>
                   <b-field label="Additional Details" type="is-small">
-                    <b-input maxLength="50" type="textarea"></b-input>
+                    <b-input v-model="application_data.additionalDescription" maxLength="50" type="textarea"></b-input>
                   </b-field>
-                  Upload Document
+                  <h5 class="mb-2">Upload Photocopy Of Receipt</h5>
                   <b-field
                     class="file is-primary"
                     type="is-small"
-                    :class="{'has-name': !!file}"
+                    :class="{'has-name': !!application_data.fileReceipt}"
                   >
                     <b-upload
-                      v-model="application_data.file"
+                      v-model="application_data.fileReceipt"
                       class="file-label"
                     >
                       <span class="file-cta">
@@ -199,26 +203,26 @@
                       </span>
                       <span
                         class="file-name"
-                        v-if="application_data && application_data.file"
+                        v-if="application_data && application_data.fileReceipt"
                       >
-                        {{ application_data.file.name }}
+                        {{ application_data.fileReceipt.name }}
                       </span>
                     </b-upload>
                   </b-field>
                 </div>
               </div>
               <section
-                v-if="application_data.Case_Category==='ACCT' && application_data.Complain_Type=='Correction of Address'"
+                v-if="application_data.Case_Category==='ACCT' && application_data.Complain_Type=='CM_ADDCHNG'"
               >
                 <div class="columns">
                   <div class="column is-2">
                     <b-field label="BillAddress">
-                      <b-checkbox></b-checkbox>
+                      <b-checkbox v-model="application_data.addressType" true-value="BillAddress" false-value=""></b-checkbox>
                     </b-field>
                   </div>
                   <div class="column is-2">
                     <b-field label="HouseAddress">
-                      <b-checkbox></b-checkbox>
+                      <b-checkbox v-model="application_data.addressType" true-value="HouseAddress" false-value="" ></b-checkbox>
                     </b-field>
                   </div>
                 </div>
@@ -227,7 +231,7 @@
                     <b-field label="PinCode*">
                       <b-input
                         @input="fetchLocality()"
-                        v-model="pincode"
+                        v-model="application_data.pinAdd"
                         type="number"
                       ></b-input>
                     </b-field>
@@ -237,7 +241,7 @@
                       <!-- fetch options -->
                       <b-select
                         @input="fetchSubLocality()"
-                        v-model="locality"
+                        v-model="application_data.locaAdd"
                         placeholder="Please Select"
                         rounded
                       >
@@ -253,7 +257,7 @@
                   <div class="column is-3">
                     <b-field label="Sub Locality*">
                       <!-- fetch options -->
-                      <b-select placeholder="Please Select" rounded>
+                      <b-select v-model="application_data.subLocAdd" placeholder="Please Select" rounded>
                         <option
                           v-for="(option,key) in subLocAddList"
                           :key="`SUBLOCA${key}`"
@@ -265,19 +269,53 @@
                   </div>
                 </div>
                 <div class="columns">
-                  <div class="column is-2">
+                  <div class="column is-4">
                     <b-field label="JJ Resettlement Colony">
-                      <b-checkbox></b-checkbox>
+                      <b-checkbox v-model="application_data.jjr"></b-checkbox>
                     </b-field>
                   </div>
-                  <div class="column is-3">
+                  <div class="column is-4">
                     <b-field label="House No*">
-                      <b-input type="number"></b-input>
+                      <b-input v-model="application_data.hNoAdd" type="text"></b-input>
                     </b-field>
                   </div>
-                  <div class="column is-3">
+                  <div class="column is-4">
                     <b-field label="Road No">
-                      <b-input type="number"></b-input>
+                      <b-input v-model="application_data.RoadNoAdd" type="text"></b-input>
+                    </b-field>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-4">
+                    <b-field label="Sub Locality 1">
+                      <b-input v-model="application_data.subLoc1Add" type="text"></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-4">
+                    <b-field label="Sub Locality 2">
+                      <b-input v-model="application_data.subLoc2Add" type="text"></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-4">
+                    <b-field label="Sub Colony">
+                      <b-input v-model="application_data.subColAdd" type="text"></b-input>
+                    </b-field>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-4">
+                    <b-field label="Village">
+                      <b-input v-model="application_data.vilAdd" type="text"></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-4">
+                    <b-field label="Khashra No">
+                      <b-input v-model="application_data.kNoAdd" type="text"></b-input>
+                    </b-field>
+                  </div>
+                  <div class="column is-4">
+                    <b-field label="Society Name">
+                      <b-input v-model="application_data.socnameAdd" type="text"></b-input>
                     </b-field>
                   </div>
                 </div>
@@ -286,7 +324,7 @@
                 <div class="column is-6">
                   <b-field
                     label="Request/Grievance Description"
-                    type="is-small"
+                    type="is-medium"
                   >
                     <b-input
                       v-model="application_data.CaseDescription"
@@ -298,26 +336,27 @@
               </div>
               <h4 class="subtitle has-text-weight-semibold">Contact Details</h4>
               <div class="columns is-multiline">
-                <div class="column is-3">
+                <div class="column is-6">
                   <b-field label="Mobile Number">
                     <b-input
-                      v-model="application_data.mobilenumber"
+                      v-model="application_data.mobile_number"
                       type="text"
                     ></b-input>
                   </b-field>
                 </div>
                 <div class="column is-3">
                   <b-field label="Preferred Contact Type*">
-                    <b-checkbox>Mobile</b-checkbox>
+                    <b-checkbox v-model="application_data.Contact" true-value="PH" false-value="">Mobile</b-checkbox>
                   </b-field>
                 </div>
                 <div class="column is-12">
-                  <b-button type="is-success" @click="onSubmitGrievance()"
+                  <b-button type="is-success" @input="onSubmitGrievance()"
                     >Submit</b-button
                   >
                 </div>
               </div>
             </div>
+          </form>
           </div>
         </div>
       </div>
@@ -355,27 +394,38 @@
             isLoading: true,
             isSuccess: false,
             option_data: [],
-            locality: null,
             isCorrectionAddress: true,
-            pincode: null,
             locaAddList: [],
             subLocAddList: [],
+            addressType: null,
+            pinAdd: null,
+            locaAdd: null,
+            subLocAdd: null,
+            jjr: null,
+            hNoAdd: null,
+            RoadNoAdd: null,
+            subLoc1Add: null,
+            subLoc2Add: null,
+            subColAdd: null,
+            vilAdd: null,
+            kNoAdd: null,
+            socnameAdd: null,
             application_data: {
               ConsumerId: null,
               Name: null,
               Address: null,
               UID: null,
               CaseDescription: null,
-              file: null,
               grievancefile: null,
               receiptId: null,
               Case_Category: null,
               Complain_Type: null,
-              mobilenumber: null,
+              mobile_number: null,
               phonenumber: null,
               Email: null,
               fileReceipt: null,
               Contact: null,
+              additionalDescription: null,
             },
           };
         },
@@ -434,6 +484,9 @@
               })
               .catch((err) => console.log(err));
           },
+          fetchOptionMessage(){
+
+          },
           sendConsumerId() {
             axios
               .get(
@@ -464,6 +517,7 @@
             for (let key in this.application_data) {
               form_data.append(`${key}`, this.application_data[key]);
             }
+            for(let i of form_data.entries())
             axios
               .post(
                 "https://djb.gov.in/DJBRMSApp/rest/Services/Grievance/Registration",
